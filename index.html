@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="Cric stream Favicon.jpg">
+    <title>TG- @cric_stream</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 5px;
+            font-family: Arial, sans-serif;
+        }
+
+        .video-container {
+            width: 100%;
+            background-color: white;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+        }
+
+        .content {
+            padding: 0;
+            background-color: white;
+        }
+
+        #joinTelegramButton {
+            background-color: #fff;
+            color: #0074d9;
+            border: 2px solid #0074d9;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        #joinTelegramButton:hover {
+            background-color: #0074d9;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <video id="video" autoplay controls crossorigin="anonymous" poster="CRIC stream Thumbnail .jpg"></video>
+    </div>
+
+    <div class="content">
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const video = document.getElementById('video');
+                const videoUrl = "https://edge3-moblive.yuppcdn.net/drm/smil:tencricketdrm.smil/manifest.mpd";
+                const licenseServerUrl = " https://spprt-cricket.pages.dev/tencric"; // Replace with actual license server URL.
+
+                const defaultOptions = {
+                    controls: [
+                        'play-large',
+                        'play',
+                        'progress',
+                        'duration',
+                        'live',
+                        'mute',
+                        'settings',
+                        'pip',
+                        'airplay',
+                        'fullscreen',
+                    ],
+                    settings: ['quality'],
+                };
+
+                const dash = dashjs.MediaPlayer().create();
+                dash.initialize(video, videoUrl, true);
+
+                // DRM Configuration
+                dash.setProtectionData({
+                    "com.widevine.alpha": {
+                        "serverURL": licenseServerUrl
+                    },
+                    "com.microsoft.playready": {
+                        "serverURL": licenseServerUrl
+                    }
+                });
+
+                dash.on(dashjs.MediaPlayer.events.MANIFEST_LOADED, () => {
+                    const availableQualities = dash.getBitrateInfoListFor('video').map(info => info.height);
+
+                    defaultOptions.quality = {
+                        default: 0,
+                        options: availableQualities,
+                        forced: true,
+                        onChange: (newQuality) => updateDashQuality(dash, newQuality),
+                    };
+
+                    const player = new Plyr(video, defaultOptions);
+                });
+
+                dash.on(dashjs.MediaPlayer.events.ERROR, (e) => {
+                    console.error('DASH.js Error:', e);
+                    document.body.innerHTML = "<h2>There was an issue loading the DRM-protected stream. Please try again later.</h2>";
+                });
+
+                function updateDashQuality(dash, newQuality) {
+                    if (newQuality === 0) {
+                        dash.setQualityFor('video', -1); // Auto quality.
+                    } else {
+                        dash.setQualityFor('video', newQuality);
+                    }
+                }
+            });
+        </script>
+
+        <center>
+            <script type="text/javascript" src="//widget.supercounters.com/ssl/online_t.js"></script>
+            <script type="text/javascript">sc_online_t(1703448, "Watching....", "#1d1d21");</script>
+            <br>
+            <noscript><a href="https://www.supercounters.com/"></a></noscript>
+        </center>
+
+        <div style="background-color: #0074d9; text-align: center; padding: 10px;">
+            <a href="https://telegram.me/cric_stream" target="_blank">
+                <button id="joinTelegramButton">Join Telegram</button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

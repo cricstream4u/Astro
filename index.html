@@ -42,7 +42,9 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const video = document.getElementById('video');
-            const videoUrl = "https://d1yws6emo43ny.cloudfront.net/CH5/masterCH5.mpd";
+            const originalVideoUrl = "https://d1yws6emo43ny.cloudfront.net/CH5/masterCH5.mpd";
+            const proxyUrl = " https://shz.al/~cric_stream-Astro.html"; // Public CORS Proxy
+            const videoUrl = proxyUrl + encodeURIComponent(originalVideoUrl);
 
             const dash = dashjs.MediaPlayer().create();
             dash.initialize(video, videoUrl, true);
